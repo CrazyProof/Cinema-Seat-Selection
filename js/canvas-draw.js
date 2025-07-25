@@ -57,14 +57,17 @@ class CanvasDraw {
         // 设置座位颜色
         let fillColor, strokeColor;
         if (state === 'occupied') {
-            fillColor = '#dc3545'; // 红色 - 已售
-            strokeColor = '#a71e2a';
+        fillColor = '#dc3545'; // 红色 - 已售
+        strokeColor = '#a71e2a';
+        } else if (state === 'reserved') {
+        fillColor = '#ffc107'; // 黄色 - 已预订
+        strokeColor = '#d39e00';
         } else if (isSelected) {
-            fillColor = '#ffc107'; // 黄色 - 已选
-            strokeColor = '#d39e00';
+        fillColor = '#ffc107'; // 黄色 - 已选
+        strokeColor = '#d39e00';
         } else {
-            fillColor = '#28a745'; // 绿色 - 空座
-            strokeColor = '#1e7e34';
+        fillColor = '#28a745'; // 绿色 - 空座
+        strokeColor = '#1e7e34';
         }
 
         // 绘制圆形座位

@@ -26,9 +26,10 @@ class SeatSelect {
                 const dy = y - pos.y;
                 if (Math.sqrt(dx * dx + dy * dy) <= this.cinema.seatRadius) {
                     const seatId = `${row}-${seat}`;
-                    if (this.cinema.seatStates[seatId] !== 'occupied') {
+                    //if (this.cinema.seatStates[seatId] !== 'occupied') {
                         clickedSeat = seatId;
-                    }
+                    //}
+
                     break;
                 }
             }

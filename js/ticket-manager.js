@@ -9,8 +9,64 @@ class TicketManager {
     initEventHandlers() {
         const reserveBtn = document.getElementById('reserveBtn');
         const buyBtn = document.getElementById('buyBtn');
-        reserveBtn.addEventListener('click', () => this.handleSubmit());
-        buyBtn.addEventListener('click', () => this.handleSubmit());
+        const cancelBtn = document.getElementById('cancelBtn');
+        const refundBtn = document.getElementById('refundBtn');
+
+        reserveBtn.addEventListener('click',() => this.reserveSeats());
+        buyBtn.addEventListener('click',() => this.confirmPurchase());
+        cancelBtn.addEventListener('click',() => this.cancelReservation());
+        refundBtn.addEventListener('click',() => this.refundTickets());
+    }
+
+    //Reserve selected seats (mark as “reserved”)
+    reserveSeats() {
+        this.cinema.selectedSeats.forEach(id => 
+            {this.cinema.seatStates[id] = 'reserved';});
+        this.redrawAndPersist();
+    }
+    //Confirm purchase
+    confirmPurchase() {
+        Object.entries(this.cinema.seatStates).forEach(([id, state]) => {
+            if (state === 'reserved') {
+                this.cinema.seatStates[id] = 'occupied';
+            }
+        });
+        this.redrawAndPersist();
+    }
+    //Cancel reservation
+    cancelReservation() {
+        this.cinema.selectedSeats.forEach(id => {
+            if (this.cinema.seatStates[id] === 'reserved') {
+                this.cinema.seatStates[id] = 'available';
+            }
+        });
+        this.redrawAndPersist();
+    }
+    //Refund ticket
+    refundTickets() {
+        this.cinema.selectedSeats.forEach(id => {
+            if (this.cinema.seatStates[id] === 'occupied') {
+                this.cinema.seatStates[id] = 'available';
+            }
+        });
+        this.redrawAndPersist();
+    }
+  
+    //Helper to clear selection, redraw, persist, update display
+    redrawAndPersist(){
+        this.cinema.selectedSeats.clear();
+        this.cinema.canvasDraw.drawSeats();
+        this.persistOccupiedSeats();
+        if(typeof updateSelectedSeatsDisplay === 'function'){
+            updateSelectedSeatsDisplay();
+        }
+    }
+
+    // Persist all occupied seats to localStorage
+    persistOccupiedSeats() {
+        const occupied = Object.keys(this.cinema.seatStates)
+            .filter(id => this.cinema.seatStates[id] === 'occupied');
+        localStorage.setItem('occupiedSeats', JSON.stringify(occupied));
     }
 
     handleSubmit() {
@@ -103,19 +159,14 @@ class TicketManager {
     }
 
     restoreReservations() {
-        let all = [];
+        let occupied = [];
         try {
-            all = JSON.parse(localStorage.getItem('cinemaReservations')) || [];
-        } catch (e) { all = []; }
-        for (const res of all) {
-            if (res.type === 'individual') {
-                for (const seatId of res.seats) {
-                    this.cinema.seatStates[seatId] = 'occupied';
-                }
-            } else if (res.type === 'group') {
-                for (const member of res.members) {
-                    if (member.seat) this.cinema.seatStates[member.seat] = 'occupied';
-                }
+            occupied = JSON.parse(localStorage.getItem('occupiedSeats')) || [];
+        } catch (e) { occupied = []; }
+        for (const id of occupied) {
+            if (this.cinema.seatStates[id] !== undefined) {
+                this.cinema.seatStates[id] = 'occupied';
+
             }
         }
         this.cinema.canvasDraw.drawSeats();
