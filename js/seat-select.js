@@ -29,6 +29,7 @@ class SeatSelect {
                     //if (this.cinema.seatStates[seatId] !== 'occupied') {
                         clickedSeat = seatId;
                     //}
+
                     break;
                 }
             }

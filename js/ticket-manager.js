@@ -166,6 +166,7 @@ class TicketManager {
         for (const id of occupied) {
             if (this.cinema.seatStates[id] !== undefined) {
                 this.cinema.seatStates[id] = 'occupied';
+
             }
         }
         this.cinema.canvasDraw.drawSeats();
