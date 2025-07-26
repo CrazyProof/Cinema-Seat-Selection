@@ -28,7 +28,7 @@ class ConfigUI {
         // 初始化时设置一次
         updateDisplay();
 
-        // 新增：团体成员添加逻辑
+        // 团体成员添加逻辑
         const addMemberBtn = document.getElementById('addMemberBtn');
         const groupSizeInput = document.getElementById('groupSize');
         const groupMembersDiv = document.getElementById('groupMembers');
