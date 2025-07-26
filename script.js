@@ -96,10 +96,10 @@ class CinemaSeating {
             case 100:
                 this.rows = 5;
                 this.seatsPerRow = 20;
-                // 调整弧形参数以适应5排座位
-                this.arcRadius = 600;
-                this.arcCenterY = this.canvasHeight + 200;
-                this.rowSpacing = 15; // 正常行间距
+                // 调整弧形参数以适应5排座位，进一步增大半径和间距
+                this.arcRadius = 800; // 进一步增大弧形半径
+                this.arcCenterY = this.canvasHeight + 300; // 调整弧心位置
+                this.rowSpacing = 25; // 进一步增大行间距
                 break;
             case 200:
                 this.rows = 10;
