@@ -20,12 +20,37 @@ class TicketManager {
 
     //Reserve selected seats (mark as “reserved”)
     reserveSeats() {
-        this.cinema.selectedSeats.forEach(id => 
-            {this.cinema.seatStates[id] = 'reserved';});
+        const ticketType = document.querySelector('input[name="ticketType"]:checked').value;
+        const selectedSeats = Array.from(this.cinema.selectedSeats);
+        if (!this.handleSubmit()) return;
+        // 只允许对应票种操作
+        if (ticketType === 'group') {
+            selectedSeats.forEach(id => { this.cinema.seatStates[id] = 'reserved'; });
+        } else if (ticketType === 'individual') {
+            selectedSeats.forEach(id => { this.cinema.seatStates[id] = 'reserved'; });
+        }
         this.redrawAndPersist();
     }
     //Confirm purchase
     confirmPurchase() {
+        const ticketType = document.querySelector('input[name="ticketType"]:checked').value;
+        const selectedSeats = Array.from(this.cinema.selectedSeats);
+        if (!this.handleSubmit()) return;
+        // 只允许对应票种操作
+        if (ticketType === 'group') {
+            // 团体票允许直接购买
+            selectedSeats.forEach(id => {
+                if (this.cinema.seatStates[id] !== 'occupied') {
+                    this.cinema.seatStates[id] = 'occupied';
+                }
+            });
+        } else if (ticketType === 'individual') {
+            selectedSeats.forEach(id => {
+                if (this.cinema.seatStates[id] !== 'occupied') {
+                    this.cinema.seatStates[id] = 'occupied';
+                }
+            });
+        }
         Object.entries(this.cinema.seatStates).forEach(([id, state]) => {
             if (state === 'reserved') {
                 this.cinema.seatStates[id] = 'occupied';
@@ -33,6 +58,7 @@ class TicketManager {
         });
         this.redrawAndPersist();
     }
+    
     //Cancel reservation
     cancelReservation() {
         this.cinema.selectedSeats.forEach(id => {
@@ -77,6 +103,10 @@ class TicketManager {
         let expectedCount = 1;
         let reservationData = [];
         if (ticketType === 'individual') {
+            if (selectedSeats.length !== 1) {
+                alert('单人票只能选择一个座位');
+                return false;
+            }
             // 个人票校验
             const name = document.getElementById('customerName').value.trim();
             const age = document.getElementById('customerAge').value.trim();
@@ -92,6 +122,10 @@ class TicketManager {
                 seats: selectedSeats.slice()
             });
         } else {
+            if (selectedSeats.length < 2) {
+                alert('团体票需选择多个座位');
+                return false;
+            }
             // 团体票校验
             const groupSize = parseInt(document.getElementById('groupSize').value, 10);
             const groupMembersDiv = document.getElementById('groupMembers');
@@ -129,24 +163,18 @@ class TicketManager {
                 members
             });
         }
-        if (!valid) return;
+        if (!valid) return false;
         if (selectedSeats.length !== expectedCount) {
             alert(`请选择${expectedCount}个座位`);
-            return;
+            return false;
         }
-        // 设置座位为已售
-        selectedSeats.forEach(seatId => {
-            this.cinema.seatStates[seatId] = 'occupied';
-        });
-        this.cinema.selectedSeats.clear();
-        this.cinema.canvasDraw.drawSeats();
         if (typeof updateSelectedSeatsDisplay === 'function') {
             updateSelectedSeatsDisplay();
         }
         alert('操作成功，座位已锁定！');
         // 保存到localStorage
         this.saveReservations(reservationData);
-        return;
+        return true;
     }
 
     saveReservations(newData) {

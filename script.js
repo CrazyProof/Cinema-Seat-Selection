@@ -63,6 +63,4 @@ class CinemaSeating {
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     const cinema = new CinemaSeating();
-    // 重新初始化TicketManager以传递cinema实例
-    cinema.ticketManager = new TicketManager(cinema);
 });
