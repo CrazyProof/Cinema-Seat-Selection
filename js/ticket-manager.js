@@ -9,11 +9,13 @@ class TicketManager {
     initEventHandlers() {
         const reserveBtn = document.getElementById('reserveBtn');
         const buyBtn = document.getElementById('buyBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
         const cancelBtn = document.getElementById('cancelBtn');
         const refundBtn = document.getElementById('refundBtn');
 
         if (reserveBtn) reserveBtn.addEventListener('click', () => this.reserveSeats());
         if (buyBtn) buyBtn.addEventListener('click', () => this.directPurchase());
+        if (confirmBtn) confirmBtn.addEventListener('click', () => this.confirmPurchase());
         if (cancelBtn) cancelBtn.addEventListener('click', () => this.cancelReservation());
         if (refundBtn) refundBtn.addEventListener('click', () => this.refundTickets());
     }
@@ -87,13 +89,30 @@ class TicketManager {
 
     // 确认购买（将预订的座位转为已售）
     confirmPurchase() {
-        Object.entries(this.cinema.seatStates).forEach(([id, state]) => {
-            if (state === 'reserved') {
+        if (this.cinema.selectedSeats.size === 0) {
+            alert('请先选择要确认购买的预订座位');
+            return;
+        }
+
+        let confirmedCount = 0;
+        let totalPrice = 0;
+
+        this.cinema.selectedSeats.forEach(id => {
+            if (this.cinema.seatStates[id] === 'reserved') {
                 this.cinema.seatStates[id] = 'occupied';
+                confirmedCount++;
+                totalPrice += this.cinema.ticketPrice;
             }
         });
-        this.redrawAndPersist();
-        alert('购票确认成功！');
+
+        if (confirmedCount > 0) {
+            // 更新预订记录状态为已购买
+            this.updateReservationStatus();
+            this.redrawAndPersist();
+            alert(`确认购买成功！共${confirmedCount}张票，总价：¥${totalPrice}`);
+        } else {
+            alert('选择的座位中没有预订状态的座位');
+        }
     }
 
     // 取消预订
@@ -322,6 +341,7 @@ class TicketManager {
 
     // 恢复预订信息
     restoreReservations() {
+        // 恢复已售座位
         let occupied = [];
         try {
             occupied = JSON.parse(localStorage.getItem('occupiedSeats')) || [];
@@ -335,12 +355,50 @@ class TicketManager {
             }
         }
 
+        // 恢复预订座位
+        try {
+            const reservations = JSON.parse(localStorage.getItem('cinemaReservations')) || [];
+            reservations.forEach(reservation => {
+                if (reservation.status === 'reserved') {
+                    reservation.seats.forEach(seatId => {
+                        if (this.cinema.seatStates[seatId] !== undefined && this.cinema.seatStates[seatId] === 'available') {
+                            this.cinema.seatStates[seatId] = 'reserved';
+                        }
+                    });
+                }
+            });
+        } catch (e) {
+            console.warn('恢复预订信息失败:', e);
+        }
+
         if (this.cinema.canvasDraw) {
             this.cinema.canvasDraw.drawSeats();
         }
 
         if (typeof updateSelectedSeatsDisplay === 'function') {
             updateSelectedSeatsDisplay();
+        }
+    }
+
+    // 更新预订记录状态为已购买
+    updateReservationStatus() {
+        try {
+            const reservations = JSON.parse(localStorage.getItem('cinemaReservations')) || [];
+            const selectedSeatsList = Array.from(this.cinema.selectedSeats);
+
+            reservations.forEach(reservation => {
+                // 检查是否有重叠的座位
+                const hasOverlap = reservation.seats.some(seat => selectedSeatsList.includes(seat));
+                if (hasOverlap && reservation.status === 'reserved') {
+                    reservation.status = 'purchased';
+                    reservation.purchaseTimestamp = new Date().toISOString();
+                    reservation.price = reservation.seats.length * this.cinema.ticketPrice;
+                }
+            });
+
+            localStorage.setItem('cinemaReservations', JSON.stringify(reservations));
+        } catch (e) {
+            console.warn('更新预订记录状态失败:', e);
         }
     }
 }

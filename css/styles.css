@@ -131,6 +131,10 @@ main {
     background-color: #ffc107;
 }
 
+.legend-color.reserved {
+    background-color: #ffc107;
+}
+
 .legend-color.occupied {
     background-color: #dc3545;
 }
