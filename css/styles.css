@@ -154,6 +154,41 @@ main {
     padding-bottom: 5px;
 }
 
+/* 放映厅配置样式 */
+.theater-config {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.theater-config label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #2a5298;
+}
+
+.theater-config select {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+}
+
+.theater-config select:focus {
+    outline: none;
+    border-color: #2a5298;
+    box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
+}
+
+#applyConfigBtn {
+    width: 100%;
+}
+
 .ticket-info {
     margin-bottom: 25px;
 }

@@ -49,25 +49,23 @@ class CanvasDraw {
         const isSelected = this.cinema.selectedSeats.has(seatId);
 
         // 保存当前状态
-        this.ctx.save();
-
-        // 移动到座位位置
+        this.ctx.save();        // 移动到座位位置
         this.ctx.translate(position.x, position.y);
 
         // 设置座位颜色
         let fillColor, strokeColor;
         if (state === 'occupied') {
-        fillColor = '#dc3545'; // 红色 - 已售
-        strokeColor = '#a71e2a';
+            fillColor = '#dc3545'; // 红色 - 已售
+            strokeColor = '#a71e2a';
         } else if (state === 'reserved') {
-        fillColor = '#ffc107'; // 黄色 - 已预订
-        strokeColor = '#d39e00';
+            fillColor = '#ffc107'; // 黄色 - 已预订
+            strokeColor = '#d39e00';
         } else if (isSelected) {
-        fillColor = '#ffc107'; // 黄色 - 已选
-        strokeColor = '#d39e00';
+            fillColor = '#ffc107'; // 黄色 - 已选
+            strokeColor = '#d39e00';
         } else {
-        fillColor = '#28a745'; // 绿色 - 空座
-        strokeColor = '#1e7e34';
+            fillColor = '#28a745'; // 绿色 - 空座
+            strokeColor = '#1e7e34';
         }
 
         // 绘制圆形座位
@@ -78,6 +76,15 @@ class CanvasDraw {
         this.ctx.strokeStyle = strokeColor;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
+
+        // 为选中的座位添加强调边框
+        if (isSelected) {
+            this.ctx.beginPath();
+            this.ctx.arc(0, 0, this.cinema.seatRadius + 3, 0, 2 * Math.PI);
+            this.ctx.strokeStyle = '#333'; // 深灰色强调边框
+            this.ctx.lineWidth = 1.5;
+            this.ctx.stroke();
+        }
 
         // 绘制座位号
         this.ctx.fillStyle = '#fff';
