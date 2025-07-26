@@ -1,9 +1,7 @@
 // 配置和UI管理功能模块
 class ConfigUI {
-    constructor(cinema) {
-        this.cinema = cinema;
+    constructor() {
         this.initTicketTypeToggle();
-        this.initTheaterConfig();
     }
 
     initTicketTypeToggle() {
@@ -67,24 +65,6 @@ class ConfigUI {
                     <input type="number" name="memberAge${i}" placeholder="年龄" min="1" max="120" required style="margin-right:6px;">
                 `;
                 groupMembersDiv.appendChild(memberDiv);
-            }
-        });
-    }
-
-    initTheaterConfig() {
-        const applyConfigBtn = document.getElementById('applyConfigBtn');
-        const theaterSizeSelect = document.getElementById('theaterSize');
-
-        applyConfigBtn.addEventListener('click', () => {
-            const selectedSize = parseInt(theaterSizeSelect.value);
-            if (this.cinema) {
-                // 确认用户是否要重置
-                if (confirm('更改放映厅配置将重置所有座位状态，是否继续？')) {
-                    this.cinema.configureTheater(selectedSize);
-                    alert(`已切换到${selectedSize}座位放映厅`);
-                }
-            } else {
-                console.error('Cinema instance not found');
             }
         });
     }
