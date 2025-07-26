@@ -97,11 +97,26 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button id="reserveBtn" class="btn-primary">预订</button>
-                    <button id="buyBtn" class="btn-success">直接购买</button>
-                    <button id="confirmBtn" class="btn-success">确认购买</button>
-                    <button id="cancelBtn" class="btn-secondary">取消预订</button>
-                    <button id="refundBtn" class="btn-danger">退票</button>
+                    <!-- 预订相关操作 -->
+                    <div class="button-group reservation-group">
+                        <h4>预订操作</h4>
+                        <div class="button-row">
+                            <button id="reserveBtn" class="btn-primary">预订</button>
+                            <button id="confirmBtn" class="btn-success">确认购买</button>
+                        </div>
+                        <div class="button-row">
+                            <button id="cancelBtn" class="btn-secondary">取消预订</button>
+                        </div>
+                    </div>
+
+                    <!-- 直接购买和退票操作 -->
+                    <div class="button-group purchase-group">
+                        <h4>购票操作</h4>
+                        <div class="button-row">
+                            <button id="buyBtn" class="btn-success">直接购买</button>
+                            <button id="refundBtn" class="btn-danger">退票</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

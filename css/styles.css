@@ -328,9 +328,51 @@ button:hover {
 }
 
 .action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button-group {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.button-group h4 {
+    margin: 0 0 8px 0;
+    color: #2a5298;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 2px solid #2a5298;
+    padding-bottom: 3px;
+}
+
+.reservation-group {
+    border-left: 4px solid #2a5298;
+}
+
+.purchase-group {
+    border-left: 4px solid #28a745;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    margin: 3px 0;
+}
+
+.button-row button {
+    flex: 1;
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 13px;
 }
 
 /* 团体成员输入样式 */
