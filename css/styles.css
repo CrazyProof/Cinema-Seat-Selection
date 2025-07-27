@@ -7,10 +7,22 @@
 
 body {
     font-family: 'Microsoft YaHei', Arial, sans-serif;
-    background: #f5f5f5;
-    /* 改为浅灰色背景 */
+    background: url('../images/微信图片_20250727011737.jpg') no-repeat center center fixed;
+    background-size: cover;
     color: #333;
     min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: -1;
 }
 
 .container {
@@ -23,30 +35,38 @@ body {
 header {
     text-align: center;
     margin-bottom: 30px;
-    color: #333;
-    /* 改为深色文字 */
+    color: #fff;
+    /* 改为白色文字 */
 }
 
 header h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
-    text-shadow: none;
-    /* 移除文字阴影 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #fff;
 }
 
 .movie-info {
-    background: #fff;
-    /* 改为白色背景 */
+    background: rgba(255, 255, 255, 0.7);
+    /* 降低不透明度到70% */
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    /* 添加轻微阴影 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    /* 增强阴影 */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .movie-info h2 {
     color: #2a5298;
     /* 保持蓝色标题 */
     margin-bottom: 10px;
+}
+
+.movie-info p {
+    color: #333;
+    /* 放映时间和放映厅改为黑色 */
+    font-weight: 500;
 }
 
 /* 主要内容区域 */
@@ -59,42 +79,125 @@ main {
 /* 影院容器 */
 .cinema-container {
     flex: 2;
-    background: #fff;
-    /* 确保白色背景 */
+    background: rgba(255, 255, 255, 0.6);
+    /* 降低不透明度到60% */
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    /* 减轻阴影 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* 增强阴影 */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* 银幕样式 */
 .screen {
-    width: 80%;
-    height: 40px;
-    background: linear-gradient(to bottom, #333, #666);
+    width: 85%;
+    height: 50px;
+    background: linear-gradient(135deg,
+            #667eea 0%,
+            #764ba2 25%,
+            #f093fb 50%,
+            #f5576c 75%,
+            #4facfe 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease-in-out infinite;
     margin: 0 auto 30px;
-    border-radius: 20px;
+    clip-path: polygon(50% 0%,
+            100% 25%,
+            100% 75%,
+            75% 100%,
+            25% 100%,
+            0% 75%,
+            0% 25%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
+    animation: shimmer 3s infinite;
+}
+
+.screen::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.6),
+            transparent);
+    border-radius: 50%;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    50% {
+        left: 100%;
+    }
+
+    100% {
+        left: 100%;
+    }
 }
 
 .screen-text {
     color: white;
     font-weight: bold;
-    font-size: 16px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    text-shadow:
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(255, 255, 255, 0.3);
+    letter-spacing: 2px;
+    z-index: 1;
+    position: relative;
+    text-transform: uppercase;
 }
 
 /* Canvas样式 */
 #seatCanvas {
     display: block;
     margin: 0 auto;
-    border: 2px solid #ddd;
+    border: none;
     border-radius: 10px;
     cursor: pointer;
-    background: #f8f9fa;
+    background: transparent;
+    backdrop-filter: none;
 }
 
 /* 图例样式 */
@@ -104,8 +207,9 @@ main {
     gap: 30px;
     margin-top: 20px;
     padding: 15px;
-    background: #f8f9fa;
+    background: transparent;
     border-radius: 10px;
+    backdrop-filter: none;
 }
 
 .legend-item {
@@ -113,6 +217,8 @@ main {
     align-items: center;
     gap: 8px;
     font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7), 0 0 4px rgba(255, 255, 255, 0.8);
+    color: #333;
 }
 
 .legend-color {
@@ -142,13 +248,15 @@ main {
 /* 控制面板样式 */
 .control-panel {
     flex: 1;
-    background: #fff;
-    /* 确保白色背景 */
+    background: rgba(255, 255, 255, 0.6);
+    /* 降低不透明度到60% */
     border-radius: 15px;
     padding: 25px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    /* 减轻阴影 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* 增强阴影 */
     height: fit-content;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .control-panel h3 {
@@ -162,8 +270,9 @@ main {
 .theater-config {
     margin-bottom: 25px;
     padding: 15px;
-    background: #f8f9fa;
+    background: rgba(248, 249, 250, 0.5);
     border-radius: 8px;
+    backdrop-filter: blur(5px);
 }
 
 .theater-config label {
@@ -233,10 +342,11 @@ main {
 }
 
 .customer-info {
-    background: #f8f9fa;
+    background: rgba(248, 249, 250, 0.5);
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
+    backdrop-filter: blur(5px);
 }
 
 .customer-info h4 {
@@ -334,10 +444,11 @@ button:hover {
 }
 
 .button-group {
-    background: #f8f9fa;
+    background: rgba(248, 249, 250, 0.5);
     border-radius: 8px;
     padding: 12px;
-    border: 1px solid #e9ecef;
+    border: 1px solid rgba(233, 236, 239, 0.5);
+    backdrop-filter: blur(5px);
 }
 
 .button-group h4 {
