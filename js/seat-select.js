@@ -27,7 +27,7 @@ class SeatSelect {
                 if (Math.sqrt(dx * dx + dy * dy) <= this.cinema.seatRadius) {
                     const seatId = `${row}-${seat}`;
                     //if (this.cinema.seatStates[seatId] !== 'occupied') {
-                        clickedSeat = seatId;
+                    clickedSeat = seatId;
                     //}
 
                     break;
@@ -70,26 +70,45 @@ class SeatSelect {
         } else {
             validRows = Array.from({ length: this.cinema.rows }, (_, i) => i + 1);
         }
-        // 查找可选座位
+
+        // 查找可选座位并按距离中心的距离排序
         const candidates = [];
+        const centerSeat = Math.ceil(this.cinema.seatsPerRow / 2); // 中心座位号
+
         for (let row of validRows) {
             for (let seat = 1; seat <= this.cinema.seatsPerRow; seat++) {
                 const seatId = `${row}-${seat}`;
                 if (this.cinema.seatStates[seatId] === 'available' && !this.cinema.selectedSeats.has(seatId)) {
-                    candidates.push(seatId);
+                    // 计算座位到中心的距离
+                    const distanceFromCenter = Math.abs(seat - centerSeat);
+                    candidates.push({ seatId, distanceFromCenter, row, seat });
                 }
             }
         }
+
+        // 按优先级排序：1.距离中心近的 2.排数中等的 3.避免上次选择的
+        candidates.sort((a, b) => {
+            // 如果距离中心不同，优先选择距离中心近的
+            if (a.distanceFromCenter !== b.distanceFromCenter) {
+                return a.distanceFromCenter - b.distanceFromCenter;
+            }
+            // 距离中心相同时，优先选择中间排次
+            const centerRow = Math.ceil(this.cinema.rows / 2);
+            const aRowDistance = Math.abs(a.row - centerRow);
+            const bRowDistance = Math.abs(b.row - centerRow);
+            return aRowDistance - bRowDistance;
+        });
+
         // 多次自动选座时换方案
         let pick = null;
-        for (let seatId of candidates) {
-            if (!this.lastAutoSelected.includes(seatId)) {
-                pick = seatId;
+        for (let candidate of candidates) {
+            if (!this.lastAutoSelected.includes(candidate.seatId)) {
+                pick = candidate.seatId;
                 break;
             }
         }
         if (!pick && candidates.length > 0) {
-            pick = candidates[0]; // 没有新方案就用第一个
+            pick = candidates[0].seatId; // 没有新方案就用第一个（最佳位置）
         }
         if (pick) {
             this.cinema.selectedSeats.clear();
@@ -131,10 +150,12 @@ class SeatSelect {
             }
             if (valid) validRows.push(row);
         }
-        // 查找同排连续可用座位块
+        // 查找同排连续可用座位块，优先选择中间位置
         let found = false;
         let selectedBlock = [];
         let lastBlock = this.lastAutoSelected;
+        let bestScore = Infinity;
+
         for (let row of validRows) {
             for (let start = 1; start <= this.cinema.seatsPerRow - groupSize + 1; start++) {
                 let block = [];
@@ -147,13 +168,25 @@ class SeatSelect {
                     }
                     block.push(seatId);
                 }
+
                 if (allAvailable) {
-                    selectedBlock = block;
-                    found = true;
-                    break;
+                    // 计算这个座位块的"中心性"得分（越小越好）
+                    const blockCenter = start + (groupSize - 1) / 2; // 座位块的中心位置
+                    const seatRowCenter = this.cinema.seatsPerRow / 2; // 排的中心位置
+                    const rowCenter = this.cinema.rows / 2; // 影院行的中心
+
+                    // 综合得分：距离座位中心的距离 + 距离排中心的距离（权重较小）
+                    const seatCenterDistance = Math.abs(blockCenter - seatRowCenter);
+                    const rowCenterDistance = Math.abs(row - rowCenter) * 0.3; // 排的中心性权重较小
+                    const score = seatCenterDistance + rowCenterDistance;
+
+                    if (score < bestScore) {
+                        bestScore = score;
+                        selectedBlock = block;
+                        found = true;
+                    }
                 }
             }
-            if (found) break;
         }
         // 如果没有新方案，允许重复上次方案
         if (!found && lastBlock && lastBlock.length === groupSize) {

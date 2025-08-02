@@ -17,7 +17,7 @@ class CinemaSeating {
         this.seatsPerRow = 20;
         this.totalSeats = this.rows * this.seatsPerRow;
 
-        // 座位尺寸和间距 - 修改为圆形座位的半径
+        // 座位尺寸和间距
         this.seatRadius = 15; // 圆形座位半径
         this.seatSpacing = 10;
         this.rowSpacing = 15;
@@ -96,10 +96,10 @@ class CinemaSeating {
             case 100:
                 this.rows = 5;
                 this.seatsPerRow = 20;
-                // 调整弧形参数以适应5排座位，进一步增大半径和间距
-                this.arcRadius = 800; // 进一步增大弧形半径
-                this.arcCenterY = this.canvasHeight + 300; // 调整弧心位置
-                this.rowSpacing = 25; // 进一步增大行间距
+                // 调整弧形参数以适应5排座位
+                this.arcRadius = 800; 
+                this.arcCenterY = this.canvasHeight + 300; 
+                this.rowSpacing = 25; 
                 break;
             case 200:
                 this.rows = 10;
@@ -107,15 +107,15 @@ class CinemaSeating {
                 // 默认的弧形参数
                 this.arcRadius = 900;
                 this.arcCenterY = this.canvasHeight + 300;
-                this.rowSpacing = 15; // 正常行间距
+                this.rowSpacing = 15;
                 break;
             case 300:
                 this.rows = 15;
                 this.seatsPerRow = 20;
                 // 调整弧形参数以适应15排座位
-                this.arcRadius = 1000; // 稍微减小弧形半径
-                this.arcCenterY = this.canvasHeight + 350; // 调整弧心位置
-                this.rowSpacing = 8; // 缩小行间距以容纳更多排
+                this.arcRadius = 1000;
+                this.arcCenterY = this.canvasHeight + 350;
+                this.rowSpacing = 8;
                 break;
             default:
                 console.warn('不支持的放映厅大小:', size);
